@@ -21,7 +21,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html { scroll-behavior: smooth; }
 
         body {
@@ -33,7 +32,7 @@
             min-height: 100vh;
         }
 
-        /* ── 3D 画布（固定全屏，不遮挡交互） ── */
+        /* ── 3D 画布 ── */
         #globe-canvas {
             position: fixed;
             top: 0; left: 0;
@@ -42,39 +41,80 @@
             pointer-events: none;
         }
 
-        /* ── 导航 ── */
+        /* ── 导航栏 (极简、透明、无分割线) ── */
         nav {
             position: fixed;
             top: 0; width: 100%;
-            padding: 18px 40px;
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(14px);
-            background: linear-gradient(to bottom, rgba(2,4,10,0.9), transparent);
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            /* 平滑渐变色，完全移除分割线 */
+            background: linear-gradient(to bottom, rgba(2,4,10,0.9) 0%, rgba(2,4,10,0.4) 60%, transparent 100%);
         }
 
+        /* Logo 和 文字组合 */
         .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .brand img {
+            height: 38px;
+            width: auto;
+            display: block;
+        }
+
+        .brand-text {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.45rem;
-            font-weight: 800;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
             letter-spacing: 0.5px;
         }
 
-        .brand span { color: var(--blue); }
+        .brand-blue {
+            color: var(--blue);
+        }
 
-        .nav-actions { display: flex; gap: 12px; }
+        .nav-center {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-link:hover { color: var(--blue); }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
 
         .btn {
-            padding: 10px 22px;
+            padding: 9px 20px;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             text-decoration: none;
             transition: all 0.3s;
             border: none;
             cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
         }
 
         .btn-ghost {
@@ -82,27 +122,67 @@
             color: var(--text);
             border: 1px solid var(--border);
         }
-
         .btn-ghost:hover { background: rgba(255,255,255,0.06); }
 
         .btn-primary {
             background: var(--blue);
             color: #fff;
-            box-shadow: 0 0 16px var(--glow);
+            box-shadow: 0 0 15px var(--glow);
         }
-
         .btn-primary:hover {
             background: #2563eb;
-            box-shadow: 0 0 26px var(--glow);
+            box-shadow: 0 0 25px var(--glow);
             transform: translateY(-2px);
         }
 
-        /* ── 内容容器 ── */
-        .content {
+        /* 手机端 Hamburger 菜单 */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            padding: 5px;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 65px; left: 0; width: 100%;
+            background: rgba(2, 4, 10, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+            z-index: 999;
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-menu a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 10px;
+        }
+
+        /* ── 内容视图 ── */
+        #marketing-content, #dashboard-content {
             position: relative;
             z-index: 10;
             pointer-events: none;
+            transition: opacity 0.5s ease;
         }
+
+        #dashboard-content { display: none; opacity: 0; }
 
         section {
             min-height: 100vh;
@@ -115,7 +195,6 @@
 
         /* Hero */
         .hero { align-items: flex-start; padding-top: 14vh; }
-
         .hero h1 {
             font-family: 'Outfit', sans-serif;
             font-size: clamp(2.7rem, 5.2vw, 5.2rem);
@@ -127,7 +206,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .hero p {
             font-size: clamp(1rem, 1.7vw, 1.3rem);
             color: var(--muted);
@@ -135,10 +213,9 @@
             line-height: 1.65;
             margin-bottom: 36px;
         }
-
         .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
 
-        /* 章节标题 */
+        /* 通用区块 */
         .section-label {
             font-family: 'Outfit', sans-serif;
             font-size: 0.8rem;
@@ -148,7 +225,6 @@
             margin-bottom: 12px;
             font-weight: 600;
         }
-
         .section-title {
             font-family: 'Outfit', sans-serif;
             font-size: clamp(1.8rem, 3.2vw, 2.8rem);
@@ -156,7 +232,6 @@
             margin-bottom: 20px;
             line-height: 1.2;
         }
-
         .section-desc {
             color: var(--muted);
             max-width: 640px;
@@ -165,7 +240,6 @@
             font-size: 1rem;
         }
 
-        /* ── About 网格 ── */
         .about-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -182,77 +256,26 @@
             backdrop-filter: blur(18px);
             transition: transform 0.3s, border-color 0.3s;
         }
-
         .glass-card:hover {
             transform: translateY(-4px);
             border-color: rgba(59,130,246,0.35);
         }
-
         .glass-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.25rem;
             margin-bottom: 12px;
         }
-
-        .glass-card p {
-            color: var(--muted);
-            line-height: 1.65;
-            font-size: 0.93rem;
-        }
-
+        .glass-card p { color: var(--muted); line-height: 1.65; font-size: 0.93rem; }
+        
         .icon-box {
             width: 48px; height: 48px;
             background: rgba(59,130,246,0.12);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-            font-size: 1.4rem;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 18px; font-size: 1.4rem;
         }
 
-        /* ── 章节表格 ── */
-        .report-table-wrapper {
-            max-width: 1000px;
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            background: var(--glass);
-            backdrop-filter: blur(18px);
-        }
-
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        .report-table th {
-            text-align: left;
-            padding: 16px 20px;
-            background: rgba(59,130,246,0.1);
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            color: var(--text);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .report-table td {
-            padding: 14px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            color: var(--muted);
-        }
-
-        .report-table td:first-child {
-            color: var(--text);
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .report-table tr:last-child td { border-bottom: none; }
-
-        /* ── 创始人板块 ── */
+        /* 创始人板块 */
         .founder-section {
             display: flex;
             align-items: center;
@@ -260,28 +283,19 @@
             max-width: 1000px;
             width: 100%;
         }
-
         .founder-avatar {
             width: 180px; height: 180px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--blue), #8b5cf6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
-            font-weight: 800;
-            color: #fff;
+            object-fit: cover;
             flex-shrink: 0;
+            border: 3px solid var(--blue);
             box-shadow: 0 0 40px rgba(59,130,246,0.3);
         }
-
         .founder-text h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.8rem;
             margin-bottom: 6px;
         }
-
         .founder-role {
             color: var(--blue);
             font-weight: 600;
@@ -289,161 +303,251 @@
             margin-bottom: 18px;
             letter-spacing: 0.5px;
         }
-
         .founder-text p {
             color: var(--muted);
             line-height: 1.7;
             font-size: 0.95rem;
             margin-bottom: 20px;
         }
-
         .founder-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--blue);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.92rem;
-            transition: gap 0.3s;
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--blue); text-decoration: none;
+            font-weight: 600; font-size: 0.92rem; transition: gap 0.3s;
+        }
+        .founder-link:hover { gap: 12px; }
+
+        /* ── 模态框 (Auth) ── */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-box {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%; max-width: 440px;
+            padding: 40px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-box { transform: translateY(0); }
+        
+        .close-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; border: none; color: var(--muted);
+            font-size: 1.5rem; cursor: pointer; transition: color 0.3s;
+        }
+        .close-btn:hover { color: #fff; }
+
+        .modal-box h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem; margin-bottom: 8px;
+        }
+        .modal-box p {
+            color: var(--muted); font-size: 0.9rem; margin-bottom: 24px;
         }
 
-        .founder-link:hover { gap: 12px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text);
+        }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px; color: #fff;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem;
+            outline: none; transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--blue);
+        }
+        
+        .auth-switch {
+            text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--muted);
+        }
+        .auth-switch a {
+            color: var(--blue); text-decoration: none; font-weight: 600; cursor: pointer;
+        }
+        .error-msg {
+            color: #ef4444; font-size: 0.85rem; margin-bottom: 16px; display: none;
+        }
+
+        /* ── Dashboard UI (Placeholder) ── */
+        .dashboard-view {
+            min-height: 100vh; padding-top: 100px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .dashboard-header {
+            text-align: center; margin-bottom: 40px;
+        }
+        .dashboard-header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 2.5rem;
+        }
+        .dashboard-grid {
+            display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+            width: 100%; max-width: 1000px;
+        }
 
         /* ── 页脚 ── */
         .site-footer {
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 10;
             background: rgba(2,4,10,0.96);
             border-top: 1px solid var(--border);
             padding: 70px 10vw 40px;
             backdrop-filter: blur(12px);
             pointer-events: auto;
         }
-
         .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
         }
-
-        .footer-col h4 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
+        .footer-col h4 { font-family: 'Outfit', sans-serif; font-size: 1.2rem; margin-bottom: 20px; }
         .footer-col p, .footer-col a {
-            color: var(--muted);
-            line-height: 1.8;
-            font-size: 0.93rem;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 6px;
-            transition: color 0.3s;
+            color: var(--muted); line-height: 1.8; font-size: 0.93rem;
+            text-decoration: none; display: block; margin-bottom: 6px; transition: color 0.3s;
         }
-
         .footer-col a:hover { color: var(--blue); }
-
         .footer-map {
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            line-height: 0;
+            border-radius: 16px; overflow: hidden; border: 1px solid var(--border); line-height: 0;
         }
-
         .footer-map iframe {
-            width: 100%;
-            height: 260px;
-            border: 0;
-            filter: grayscale(1) invert(0.9) contrast(0.8);
-            transition: filter 0.5s;
+            width: 100%; height: 260px; border: 0;
+            filter: grayscale(1) invert(0.9) contrast(0.8); transition: filter 0.5s;
         }
-
         .footer-map iframe:hover { filter: none; }
-
+        
+        /* 底部居中开发者信息 */
         .footer-bottom {
-            max-width: 1200px;
-            margin: 50px auto 0;
-            padding-top: 24px;
+            max-width: 1200px; margin: 50px auto 0; padding-top: 24px;
             border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--muted);
-            font-size: 0.82rem;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: var(--muted); font-size: 0.85rem; text-align: center; gap: 8px;
         }
-
         .footer-bottom a {
             color: var(--blue);
             text-decoration: none;
             font-weight: 600;
+            transition: color 0.3s;
+        }
+        .footer-bottom a:hover {
+            text-decoration: underline;
         }
 
-        /* ── 响应式 ── */
+        /* ── 响应式 (手机/平板) ── */
         @media (max-width: 900px) {
             .footer-grid { grid-template-columns: 1fr; }
             .founder-section { flex-direction: column; text-align: center; gap: 30px; }
-            .founder-avatar { width: 140px; height: 140px; font-size: 2.2rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
-
+        
         @media (max-width: 768px) {
-            nav { padding: 14px 20px; }
+            nav { padding: 12px 15px; }
+            
+            /* 隐藏 PC 导航链接 */
+            .nav-center { display: none; } 
+            
+            /* 保持按钮可见，但缩小尺寸以适配手机 */
+            .nav-actions { 
+                display: flex; 
+                gap: 8px;
+            }
+            .nav-actions .btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+            
+            /* 显示汉堡菜单 */
+            .hamburger { 
+                display: block; 
+                margin-left: 5px;
+            } 
+
+            /* 缩小 Logo 和文字 */
+            .brand img { height: 30px; }
+            .brand-text { font-size: 1.1rem; }
+            
             section { padding: 0 22px; }
             .hero { align-items: center; text-align: center; }
             .hero-buttons { justify-content: center; }
             .site-footer { padding: 50px 22px 30px; }
-            .footer-bottom { flex-direction: column; text-align: center; }
         }
 
-        /* 隐藏触发区域：三击进入 admin */
+        /* 隐藏三击区域 */
         .admin-hotspot {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 50px;
-            height: 50px;
-            z-index: 200;
-            cursor: default;
+            position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; z-index: 200;
         }
     </style>
 </head>
 <body>
 
-    <!-- 3D 地球画布 -->
     <canvas id="globe-canvas"></canvas>
-
-    <!-- 隐藏的三击区域 -->
     <div class="admin-hotspot" id="adminHotspot" title=""></div>
 
     <!-- 导航 -->
     <nav>
-        <div class="brand">iMENA <span>Report</span></div>
-        <div class="nav-actions">
-            <a href="#" class="btn btn-ghost">Sign In</a>
-            <a href="#" class="btn btn-primary">Create Account</a>
+        <!-- Logo + 文字 -->
+        <div class="brand" onclick="window.location.reload()">
+            <img src="https://i.postimg.cc/L4vFPK6y/i-MENA-Report.png" alt="iMENA Report Logo">
+            <div class="brand-text">
+                <span class="brand-blue">iMENA</span> Report
+            </div>
         </div>
+        
+        <!-- 桌面端链接 -->
+        <div class="nav-center" id="navCenterLinks">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#founder" class="nav-link">Founder</a>
+            <a href="#contacts" class="nav-link">Contacts</a>
+        </div>
+
+        <!-- 桌面端/手机端通用操作按钮 -->
+        <div class="nav-actions" id="navAuthButtons">
+            <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+            <button class="btn btn-primary" onclick="openAuthModal('signup')">Create Account</button>
+        </div>
+        
+        <!-- 登录后导航按钮 -->
+        <div class="nav-actions" id="navDashboardButtons" style="display:none;">
+            <button class="btn btn-ghost" onclick="handleLogout()">Sign Out</button>
+        </div>
+
+        <!-- 手机端汉堡按钮 -->
+        <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
     </nav>
 
-    <!-- 主体内容 -->
-    <div class="content">
+    <!-- 手机端下拉菜单 (仅包含链接，按钮已经在上方了) -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home" onclick="toggleMobileMenu()">Home</a>
+        <a href="#services" onclick="toggleMobileMenu()">Services</a>
+        <a href="#founder" onclick="toggleMobileMenu()">Founder</a>
+        <a href="#contacts" onclick="toggleMobileMenu()">Contacts</a>
+    </div>
 
-        <!-- 首屏 -->
-        <section class="hero">
+    <!-- 首页内容 -->
+    <div id="marketing-content">
+        
+        <!-- Hero (Home) -->
+        <section class="hero" id="home">
             <h1>Prepare Your Teaching Internship Report with Confidence.</h1>
             <p>iMENA Report helps student-teachers organise their internship information, prepare report sections, check consistency, and produce a professionally formatted academic report. Free to use.</p>
             <div class="hero-buttons">
-                <a href="#" class="btn btn-primary" style="padding:15px 34px; font-size:1rem;">Start Your Report</a>
-                <a href="#how-it-works" class="btn btn-ghost" style="padding:15px 34px; font-size:1rem;">Learn How It Works</a>
+                <button onclick="openAuthModal('signup')" class="btn btn-primary" style="padding:15px 34px; font-size:1rem;">Start Your Report</button>
+                <a href="#services" class="btn btn-ghost" style="padding:15px 34px; font-size:1rem;">Learn How It Works</a>
             </div>
         </section>
 
-        <!-- 关于平台 + 如何运作（精简合并） -->
-        <section id="how-it-works">
+        <!-- 服务与功能 (Services) -->
+        <section id="services">
             <div class="section-label">About the Platform</div>
             <h2 class="section-title">Designed for Student-Teachers</h2>
             <p class="section-desc">iMENA Report is an independent academic report preparation and formatting tool. It is not an official platform of MINEDUC, NESA, REB, TTC Muhanga or any host school. Students remain responsible for the accuracy and academic quality of their final report.</p>
@@ -472,47 +576,13 @@
             </div>
         </section>
 
-        <!-- 报告章节表 -->
-        <section>
-            <div class="section-label">Report Structure</div>
-            <h2 class="section-title">What Your Internship Report Includes</h2>
-            <p class="section-desc">The workspace organises your report into the following sections. The exact required chapters and order should follow the official guidelines provided by your college.</p>
-
-            <div class="report-table-wrapper">
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Information Required</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Preliminary Pages</td><td>Title page, declaration, dedication and acknowledgements</td></tr>
-                        <tr><td>Introduction</td><td>Background and purpose of the internship</td></tr>
-                        <tr><td>School Information</td><td>Actual information about the host school</td></tr>
-                        <tr><td>School Organisation</td><td>Administration, staff and school structure</td></tr>
-                        <tr><td>Teaching Activities</td><td>Lessons and activities completed during internship</td></tr>
-                        <tr><td>Classroom Observations</td><td>Actual classroom observations</td></tr>
-                        <tr><td>Lesson Preparation</td><td>Preparation and use of teaching materials</td></tr>
-                        <tr><td>Teaching Experiences</td><td>Challenges, achievements and lessons learned</td></tr>
-                        <tr><td>Assessment</td><td>Actual assessment activities and experiences</td></tr>
-                        <tr><td>Challenges</td><td>Difficulties experienced during internship</td></tr>
-                        <tr><td>Recommendations</td><td>Suggestions based on real experiences</td></tr>
-                        <tr><td>Conclusion</td><td>Summary of the internship experience</td></tr>
-                        <tr><td>References</td><td>Sources used in preparing the report</td></tr>
-                        <tr><td>Appendices</td><td>Supporting teaching documents</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- 创始人介绍 -->
-        <section>
+        <!-- 创始人 (Founder) -->
+        <section id="founder">
             <div class="section-label">The Founder</div>
             <h2 class="section-title">Meet the Mind Behind iMENA Report</h2>
 
             <div class="founder-section">
-                <div class="founder-avatar">TC</div>
+                <img src="https://i.postimg.cc/0NDn0HhJ/chrisostom.png" alt="TUYISENGE Jean Chrisostom" class="founder-avatar">
                 <div class="founder-text">
                     <h3>TUYISENGE Jean Chrisostom</h3>
                     <div class="founder-role">Founder &amp; Idea Generator — iMENA Hub</div>
@@ -522,51 +592,154 @@
             </div>
         </section>
 
+        <!-- 页脚与联系方式 (Contacts) -->
+        <footer class="site-footer" id="contacts">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Contact iMENA Hub</h4>
+                    <p>Bugesera, Ntarama, Rwanda</p>
+                    <a href="mailto:imenahub.rw@gmail.com">imenahub.rw@gmail.com</a>
+                    <a href="tel:+250796717230">+250 796 717 230</a>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.2059634575353!2d30.084297374967644!3d-2.073485597907942!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dcab005bc384fd%3A0xe460f1d53ebb4fab!2sTUYISENGE%20Jean%20Chrisostom!5e0!3m2!1sen!2srw!4v1793891057157!5m2!1sen!2srw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部居中 -->
+            <div class="footer-bottom">
+                <span>iMENA Report is an independent academic tool. Not affiliated with MINEDUC, NESA, REB, or any host school.</span>
+                <span>&copy; 2026 iMENA Hub. All rights reserved.</span>
+                <span>Developed by <a href="http://imena-lab.vercel.app/" target="_blank" rel="noopener">iMENA Lab</a></span>
+            </div>
+        </footer>
     </div>
 
-    <!-- 页脚 -->
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>Contact iMENA Hub</h4>
-                <p>Bugesera, Ntarama, Rwanda</p>
-                <a href="mailto:imenahub.rw@gmail.com">imenahub.rw@gmail.com</a>
-                <a href="tel:+250796717230">+250 796 717 230</a>
-                <p style="margin-top:24px; font-size:0.82rem;">
-                    &copy; 2026 iMENA Hub. All rights reserved.<br>
-                    Developed by <a href="https://imena-lab.vercel.app" target="_blank" rel="noopener">iMENA Lab</a>.
-                </p>
+    <!-- 学生仪表盘 (登录后显示) -->
+    <div id="dashboard-content">
+        <section class="dashboard-view">
+            <div class="dashboard-header">
+                <div class="section-label">Student Dashboard</div>
+                <h1>Welcome, <span id="userNameDisplay">Student</span></h1>
+                <p style="color: var(--muted); margin-top: 10px;">Ready to work on your internship report?</p>
             </div>
-            <div class="footer-col">
-                <div class="footer-map">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.2059634575353!2d30.084297374967644!3d-2.073485597907942!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dcab005bc384fd%3A0xe460f1d53ebb4fab!2sTUYISENGE%20Jean%20Chrisostom!5e0!3m2!1sen!2srw!4v1793891057157!5m2!1sen!2srw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            
+            <div class="dashboard-grid">
+                <div class="glass-card">
+                    <h3>Your Profile</h3>
+                    <p style="margin-top: 15px; margin-bottom: 5px;"><strong>Email:</strong> <span id="userEmailDisplay"></span></p>
+                    <p style="margin-bottom: 5px;"><strong>Host School:</strong> <span id="userSchoolDisplay"></span></p>
+                    <p style="margin-bottom: 15px;"><strong>Academic Year:</strong> <span id="userYearDisplay"></span></p>
+                </div>
+                <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <h3>No Active Report</h3>
+                    <p style="margin-bottom: 20px;">You haven't started your internship report yet.</p>
+                    <button class="btn btn-primary" style="padding: 15px 30px;">Start New Report</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Auth 模态框 -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+            
+            <!-- Login Form -->
+            <div id="loginFormContainer">
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue working on your report.</p>
+                <div class="error-msg" id="loginError"></div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="student@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; margin-top:10px;">Sign In</button>
+                </form>
+                <div class="auth-switch">
+                    Don't have an account? <a onclick="switchAuthView('signup')">Create one</a>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signupFormContainer" style="display: none;">
+                <h2>Create Account</h2>
+                <p>Join iMENA Report to prepare your internship report.</p>
+                <div class="error-msg" id="signupError"></div>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signupEmail" required placeholder="student@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" required placeholder="Min 6 characters">
+                    </div>
+                    <div class="form-group">
+                        <label>Host School</label>
+                        <select id="signupSchool" required>
+                            <option value="">Select your host school</option>
+                            <option value="G.S. Saint Etienne">G.S. Saint Etienne</option>
+                            <option value="EP Mbare">EP Mbare</option>
+                            <option value="EP Kigarama">EP Kigarama</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Academic Year</label>
+                        <input type="text" id="signupYear" required placeholder="e.g. 2026-2027">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; margin-top:10px;">Create Account</button>
+                </form>
+                <div class="auth-switch">
+                    Already have an account? <a onclick="switchAuthView('login')">Sign In</a>
                 </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <span>iMENA Report is an independent academic tool. Not affiliated with MINEDUC, NESA, REB, or any host school.</span>
-        </div>
-    </footer>
+    </div>
 
-    <!-- Three.js & GSAP -->
+    <!-- Three.js & GSAP & Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://olwzwgtqrcbazdjfoezh.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_qzjObXQlOCBDLAYlfvxbSA_TlnA90hp';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         document.addEventListener("DOMContentLoaded", () => {
             initGlobe();
             initAdminHotspot();
+            checkSession();
         });
 
         /* ──────────────────────────────────────────
-           1. 3D 地球：日间纹理，无太阳光晕，聚焦非洲 → 变焦卢旺达
+           1. 手机端菜单控制
+           ────────────────────────────────────────── */
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+
+        /* ──────────────────────────────────────────
+           2. 3D 地球与滚动动画
            ────────────────────────────────────────── */
         function initGlobe() {
             const canvas = document.getElementById('globe-canvas');
             const scene = new THREE.Scene();
-            scene.background = null;
-
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 2000);
             camera.position.set(0, 0, 18);
 
@@ -574,55 +747,35 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            // ── 光照（纯日间，无光晕） ──
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
             scene.add(ambientLight);
-
             const sunLight = new THREE.DirectionalLight(0xffffff, 1.6);
             sunLight.position.set(5, 3, 8);
             scene.add(sunLight);
-
-            // 背面补光，防止地球暗部死黑
             const fillLight = new THREE.DirectionalLight(0x88aaff, 0.3);
             fillLight.position.set(-6, -2, -8);
             scene.add(fillLight);
 
-            // ── 地球组 ──
             const earthGroup = new THREE.Group();
             scene.add(earthGroup);
 
             const loader = new THREE.TextureLoader();
-
-            // 使用高精度日间地球纹理（蓝色大理石）
-            const earthMap = loader.load(
-                'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-                undefined,
-                undefined,
-                (err) => console.error('Earth texture error:', err)
-            );
-
+            const earthMap = loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
             const bumpMap = loader.load('https://unpkg.com/three-globe/example/img/earth-topology.png');
             const waterMap = loader.load('https://unpkg.com/three-globe/example/img/earth-water.png');
 
             const earthGeo = new THREE.SphereGeometry(5, 64, 64);
             const earthMat = new THREE.MeshPhongMaterial({
-                map: earthMap,
-                bumpMap: bumpMap,
-                bumpScale: 0.06,
-                specularMap: waterMap,
-                specular: new THREE.Color(0x333333),
-                shininess: 8
+                map: earthMap, bumpMap: bumpMap, bumpScale: 0.06,
+                specularMap: waterMap, specular: new THREE.Color(0x333333), shininess: 8
             });
             const earthMesh = new THREE.Mesh(earthGeo, earthMat);
             earthGroup.add(earthMesh);
 
-            // ── 初始旋转：让非洲面向相机 ──
-            // 非洲大致在经度 20°E 附近，将地球绕 Y 轴旋转使该区域朝向相机
             const AFRICA_ROTATION_Y = -0.35;
             earthGroup.rotation.y = AFRICA_ROTATION_Y;
             earthGroup.rotation.z = 0.05;
 
-            // ── 星空背景（轻微，不抢眼） ──
             const starGeo = new THREE.BufferGeometry();
             const starCount = 1800;
             const positions = new Float32Array(starCount * 3);
@@ -634,56 +787,33 @@
             const stars = new THREE.Points(starGeo, starMat);
             scene.add(stars);
 
-            // ── 初始位置：地球偏右，给左侧文字留空间 ──
             earthGroup.position.set(5.5, 0, 0);
 
-            // ── GSAP ScrollTrigger：滚动变焦至卢旺达 ──
             gsap.registerPlugin(ScrollTrigger);
-
             const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: "body",
-                    start: "top top",
-                    end: "bottom bottom",
-                    scrub: 1.3
-                }
+                scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 1.3 }
             });
 
-            // 第 1 阶段（0 → 0.4）：地球从右侧移到中央，相机拉近，非洲更清晰
             tl.to(earthGroup.position, { x: 0, y: 0, z: 0, duration: 0.4 }, 0);
             tl.to(camera.position, { z: 13, duration: 0.4 }, 0);
             tl.to(earthGroup.rotation, { y: AFRICA_ROTATION_Y - 0.15, duration: 0.4 }, 0);
-
-            // 第 2 阶段（0.4 → 0.8）：继续拉近，对准卢旺达
-            // 卢旺达坐标约 -2° 纬度, 30° 经度
-            // 通过调整地球旋转和相机位置来瞄准该区域
             tl.to(earthGroup.position, { x: 0, y: 0.5, z: -2, duration: 0.4 }, 0.4);
             tl.to(camera.position, { z: 7, duration: 0.4 }, 0.4);
             tl.to(earthGroup.rotation, { y: AFRICA_ROTATION_Y - 0.45, x: 0.12, duration: 0.4 }, 0.4);
-
-            // 第 3 阶段（0.8 → 1）：地球略微后退，展示全貌，为后续内容留出空间
             tl.to(earthGroup.position, { x: 0, y: 1.5, z: -8, duration: 0.2 }, 0.8);
             tl.to(camera.position, { z: 22, duration: 0.2 }, 0.8);
             tl.to(earthGroup.rotation, { x: 0.3, y: AFRICA_ROTATION_Y - 0.3, duration: 0.2 }, 0.8);
 
-            // ── 渲染循环 ──
             const clock = new THREE.Clock();
-
             function animate() {
                 requestAnimationFrame(animate);
                 const t = clock.getElapsedTime();
-
-                // 极缓慢自转，增加真实感（几乎不可察觉）
                 earthMesh.rotation.y = t * 0.01;
-
-                // 星空缓慢旋转
                 stars.rotation.y = t * 0.003;
-
                 renderer.render(scene, camera);
             }
             animate();
 
-            // ── 响应窗口大小 ──
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
@@ -692,27 +822,157 @@
         }
 
         /* ──────────────────────────────────────────
-           2. 三击隐藏热点 → 跳转 admin.html
+           3. Admin 隐藏触发
            ────────────────────────────────────────── */
         function initAdminHotspot() {
             const hotspot = document.getElementById('adminHotspot');
-            let clickCount = 0;
-            let clickTimer = null;
-
+            let clicks = 0, timer = null;
             hotspot.addEventListener('click', () => {
-                clickCount++;
-                if (clickTimer) clearTimeout(clickTimer);
-
-                if (clickCount === 3) {
-                    // 跳转到 admin.html
+                clicks++;
+                if (timer) clearTimeout(timer);
+                if (clicks === 3) {
                     window.location.href = 'admin.html';
-                    clickCount = 0;
+                    clicks = 0;
                 } else {
-                    clickTimer = setTimeout(() => {
-                        clickCount = 0;
-                    }, 800);
+                    timer = setTimeout(() => clicks = 0, 800);
                 }
             });
+        }
+
+        /* ──────────────────────────────────────────
+           4. 模态框控制
+           ────────────────────────────────────────── */
+        const authModal = document.getElementById('authModal');
+        const loginFormContainer = document.getElementById('loginFormContainer');
+        const signupFormContainer = document.getElementById('signupFormContainer');
+
+        function openAuthModal(type) {
+            authModal.classList.add('active');
+            switchAuthView(type);
+        }
+
+        function closeAuthModal() {
+            authModal.classList.remove('active');
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('signupError').style.display = 'none';
+        }
+
+        function switchAuthView(type) {
+            if (type === 'login') {
+                loginFormContainer.style.display = 'block';
+                signupFormContainer.style.display = 'none';
+            } else {
+                loginFormContainer.style.display = 'none';
+                signupFormContainer.style.display = 'block';
+            }
+        }
+
+        /* ──────────────────────────────────────────
+           5. Supabase 认证逻辑
+           ────────────────────────────────────────── */
+        async function handleSignup(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const errorEl = document.getElementById('signupError');
+            btn.innerText = "Creating Account..."; btn.disabled = true; errorEl.style.display = 'none';
+
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const school = document.getElementById('signupSchool').value;
+            const year = document.getElementById('signupYear').value;
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: name,
+                        host_school: school,
+                        academic_year: year
+                    }
+                }
+            });
+
+            btn.innerText = "Create Account"; btn.disabled = false;
+
+            if (error) {
+                errorEl.innerText = error.message;
+                errorEl.style.display = 'block';
+            } else {
+                if (data.session) {
+                    closeAuthModal();
+                    showDashboard(data.user);
+                } else {
+                    alert("Registration successful! Please check your email to verify your account, then sign in.");
+                    switchAuthView('login');
+                }
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const errorEl = document.getElementById('loginError');
+            btn.innerText = "Signing In..."; btn.disabled = true; errorEl.style.display = 'none';
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            btn.innerText = "Sign In"; btn.disabled = false;
+
+            if (error) {
+                errorEl.innerText = error.message;
+                errorEl.style.display = 'block';
+            } else {
+                closeAuthModal();
+                showDashboard(data.user);
+            }
+        }
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        }
+
+        async function checkSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                showDashboard(session.user);
+            }
+        }
+
+        /* ──────────────────────────────────────────
+           6. 界面切换 (Dashboard vs Marketing)
+           ────────────────────────────────────────── */
+        function showDashboard(user) {
+            // 隐藏未登录按钮，显示登出按钮
+            document.getElementById('navAuthButtons').style.display = 'none';
+            document.getElementById('navDashboardButtons').style.display = 'flex';
+            
+            // 隐藏手机端汉堡菜单里的登录按钮 (如果之前有的话)
+            // 因为我们把按钮移到了上面，这里只需要确保切换正常
+
+            // 切换视图
+            const marketing = document.getElementById('marketing-content');
+            marketing.style.opacity = '0';
+            setTimeout(() => {
+                marketing.style.display = 'none';
+                const dash = document.getElementById('dashboard-content');
+                dash.style.display = 'block';
+                void dash.offsetWidth; 
+                dash.style.opacity = '1';
+                window.scrollTo(0, 0);
+            }, 500);
+
+            // 填充用户信息
+            const meta = user.user_metadata || {};
+            document.getElementById('userNameDisplay').innerText = meta.full_name || 'Student';
+            document.getElementById('userEmailDisplay').innerText = user.email;
+            document.getElementById('userSchoolDisplay').innerText = meta.host_school || 'Not selected';
+            document.getElementById('userYearDisplay').innerText = meta.academic_year || 'Not selected';
         }
     </script>
 </body>
